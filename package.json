@@ -1,0 +1,25 @@
+{
+  "name": "rainbow",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:dev": "webpack --watch --mode development"
+  },
+  "devDependencies": {
+    "electron": "^2.0.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "mousetrap": "^1.6.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-virtualized": "^9.19.0",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3"
+  }
+}
