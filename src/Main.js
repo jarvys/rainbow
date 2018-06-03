@@ -49,19 +49,8 @@ class Search extends React.Component {
 
     onKeyPress(e) {
         if (e.key == "Enter") {
-            this.props.onSearch(this.state.search)
+            this.props.onSearch(this.state.search, e.shiftKey)
         }
-    }
-
-    onChange(e) {
-        // const text = e.target.value
-
-        // try {
-        //     const pattern = new RegExp(text)
-        //     this.props.onChange(text)
-        // } catch (e) {
-        //     // nothing to do
-        // }
     }
 
     render() {
@@ -373,14 +362,45 @@ class Main extends React.Component {
         this.setState({ scrollIndex: line })
     }
 
-    searchLogs(logs, from, pattern) {
-        let position = -1
+    buildLogIterator(logs, from, reverse) {
+        if (!reverse) {
+            return {
+                cursor: from,
+                hasNext() {
+                    return this.cursor < logs.length
+                },
+                next() {
+                    const log = logs[this.cursor]
+                    const index = this.cursor
+                    this.cursor++
+                    return { log, index }
+                }
+            }
+        } else {
+            return {
+                cursor: from,
+                hasNext() {
+                    return this.cursor >= 0
+                },
+                next() {
+                    const log = logs[this.cursor]
+                    const index = this.cursor
+                    this.cursor--
+                    return { log, index }
+                }
+            }
+        }
+    }
 
-        logs = logs.slice(from)
-        for (let i = 0; i < logs.length; i++) {
-            const logText = Log.convertToText(logs[i])
+    searchLogs(logs, from, pattern, reverse) {
+        let position = -1
+        const logIter = this.buildLogIterator(logs, from, reverse)
+
+        while (logIter.hasNext()) {
+            const { log, index } = logIter.next()
+            const logText = Log.convertToText(log)
             if (pattern.test(logText)) {
-                position = i + from
+                position = index
                 break
             }
         }
@@ -388,7 +408,7 @@ class Main extends React.Component {
         return position
     }
 
-    searchNext(search) {
+    searchNext(search, reverse) {
         if (search === '') {
             this.setState({ search: null })
             return
@@ -403,35 +423,17 @@ class Main extends React.Component {
 
         let position = this.state.scrollIndex
         if (position === undefined) {
-            position = 0
+            position = -1
         }
 
-        position = this.searchLogs(this.state.filterLogs, position + 1, pattern)
+        let nextPosition = reverse ? position - 1 : position + 1
+        position = this.searchLogs(this.state.filterLogs, nextPosition, pattern, reverse)
         if (position === -1) {
-            position = this.searchLogs(this.state.filterLogs, 0, pattern)
+            nextPosition = reverse ? this.state.filterLogs.length - 1 : 0
+            position = this.searchLogs(this.state.filterLogs, nextPosition, pattern, reverse)
         }
         this.setState({
             scrollIndex: position == -1 ? undefined : position
-        })
-    }
-
-    updateSearch(search) {
-        if (search === '') {
-            this.setState({
-                search: null
-            })
-            return
-        }
-
-        const s = {
-            pattern: new RegExp(search),
-            color: '#2ecc71'
-        }
-        s.position = this.searchLogs(this.state.filterLogs, 0, s.pattern)
-        console.log('update search', s)
-        this.setState({
-            search: s,
-            scrollIndex: s.position == -1 ? undefined : s.position
         })
     }
 
