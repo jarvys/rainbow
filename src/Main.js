@@ -320,6 +320,12 @@ class Main extends React.Component {
         let { logs, filterLogs, labels, scrollIndex } = this.state
         labels = labels.filter(label => label.text !== '')
 
+        if (index >= filterLogs.length) {
+            return (
+                <div key={key} style={style}></div>
+            )
+        }
+
         const log = filterLogs[index]
         return (
             <div key={key} style={style}>
@@ -478,7 +484,7 @@ class Main extends React.Component {
                                 onRowsRendered={this.saveLogsRange.bind(this)}
                                 scrollToIndex={this.state.scrollIndex}
                                 rowRenderer={this.logRenderer.bind(this)}
-                                rowCount={filterLogs.length}
+                                rowCount={filterLogs.length + Math.floor(height / 17)}
                                 rowHeight={17}
                                 height={height}
                                 width={width}
