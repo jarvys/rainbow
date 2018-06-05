@@ -7,7 +7,7 @@ class Log extends React.Component {
 
     static resolveKeys(data) {
         let keys = Object.keys(data)
-        const importantKeys = ['time', 'level', 'Node', 'Server', 'Clerk', 'Event', 'action']
+        const importantKeys = ['time', 'level', 'Node', 'Server', 'Clerk', 'Log', 'ShardMaster', 'Event', 'action']
         keys = keys.filter(key => importantKeys.indexOf(key) == -1)
         keys = importantKeys.concat(keys)
         return keys

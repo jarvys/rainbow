@@ -149,6 +149,14 @@ class Main extends React.Component {
     readFile(path, callback) {
         const result = []
 
+        const stats = fs.lstatSync(path)
+        if (stats.size < 200 * 1024) {
+            fs.readFile(path, { encoding: 'utf-8' }, (e, data) => {
+                callback(null, data.split('\n'))
+            })
+            return
+        }
+
         const stream = fs.createReadStream(path, { encoding: 'utf-8' })
         let content = ''
         stream.on('data', chunk => {
