@@ -483,6 +483,7 @@ class Main extends React.Component {
                             <List
                                 onRowsRendered={this.saveLogsRange.bind(this)}
                                 scrollToIndex={this.state.scrollIndex}
+                                scrollToAlignment='center'
                                 rowRenderer={this.logRenderer.bind(this)}
                                 rowCount={filterLogs.length + Math.floor(height / 17)}
                                 rowHeight={17}

@@ -7,7 +7,7 @@ class Log extends React.Component {
 
     static resolveKeys(data) {
         let keys = Object.keys(data)
-        const importantKeys = ['time', 'level', 'Node', 'Server', 'Clerk', 'Log', 'ShardMaster', 'Event', 'action']
+        const importantKeys = ['time', 'level', 'ShardKV', 'ShardKV.Watcher', 'Node', 'Server', 'Clerk', 'Log', 'ShardMaster', 'Event', 'action']
         keys = keys.filter(key => importantKeys.indexOf(key) == -1)
         keys = importantKeys.concat(keys)
         return keys
@@ -26,7 +26,9 @@ class Log extends React.Component {
 
             const value = log.data[key]
             let text = ''
-            if (typeof (value) === 'string') {
+            if (key === 'time') {
+                text = value
+            } else if (typeof (value) === 'string') {
                 text = `${key}="${value}"`
             } else {
                 text = `${key}="${JSON.stringify(value)}"`
